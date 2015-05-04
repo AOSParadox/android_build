@@ -179,8 +179,8 @@ $(error Directory names containing spaces not supported)
 endif
 
 ifeq ($(JAVA_NOT_REQUIRED), false)
-java_version_str := $(shell unset _JAVA_OPTIONS && java -version 2>&1)
-javac_version_str := $(shell unset _JAVA_OPTIONS && javac -version 2>&1)
+java_version_str := $(shell unset _JAVA_OPTIONS JAVA_TOOL_OPTIONS && java -version 2>&1)
+javac_version_str := $(shell unset _JAVA_OPTIONS JAVA_TOOL_OPTIONS && javac -version 2>&1)
 
 # Check for the correct version of java, should be 1.8 by
 # default and only 1.7 if LEGACY_USE_JAVA7 is set.
