@@ -18,6 +18,7 @@
 # emulator-related modules to PRODUCT_PACKAGES.
 #
 
+ifneq ($(PRODUCT_BRAND),YU)
 # Host modules
 PRODUCT_PACKAGES += \
 
@@ -67,3 +68,4 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGE_OVERLAYS := device/generic/goldfish/overlay
 
 PRODUCT_CHARACTERISTICS := emulator
+endif
