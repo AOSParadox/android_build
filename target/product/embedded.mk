@@ -68,6 +68,7 @@ PRODUCT_PACKAGES += \
     servicemanager \
     sh \
     surfaceflinger \
+    sysinit \
     toolbox \
     toybox \
     tzdatacheck \
