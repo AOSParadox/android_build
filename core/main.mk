@@ -181,19 +181,11 @@ ifeq ($(JAVA_NOT_REQUIRED), false)
 java_version_str := $(shell unset _JAVA_OPTIONS JAVA_TOOL_OPTIONS && java -version 2>&1)
 javac_version_str := $(shell unset _JAVA_OPTIONS JAVA_TOOL_OPTIONS && javac -version 2>&1)
 
-# Check for the correct version of java, should be 1.8 by
-# default and only 1.7 if LEGACY_USE_JAVA7 is set.
-ifeq ($(LEGACY_USE_JAVA7),) # if LEGACY_USE_JAVA7 == ''
-required_version := "1.8.x"
-required_javac_version := "1.8"
-java_version := $(shell echo '$(java_version_str)' | grep '[ "]1\.8[\. "$$]')
-javac_version := $(shell echo '$(javac_version_str)' | grep '[ "]1\.8[\. "$$]')
-else
-required_version := "1.7.x"
-required_javac_version := "1.7"
-java_version := $(shell echo '$(java_version_str)' | grep '^java .*[ "]1\.7[\. "$$]')
-javac_version := $(shell echo '$(javac_version_str)' | grep '[ "]1\.7[\. "$$]')
-endif # if LEGACY_USE_JAVA7 == ''
+# Check for the correct version of java, should be 1.7 or 1.8
+required_version := "1.7.x or 1.8.x"
+required_javac_version := "1.7 or 1.8"
+java_version := $(shell echo '$(java_version_str)' | grep '[ "]1\.[78][\. "$$]')
+javac_version := $(shell echo '$(javac_version_str)' | grep '[ "]1\.[78][\. "$$]')
 
 ifeq ($(strip $(java_version)),)
 $(info ************************************************************)
@@ -207,43 +199,6 @@ $(info Please follow the machine setup instructions at)
 $(info $(space)$(space)$(space)$(space)https://source.android.com/source/initializing.html)
 $(info ************************************************************)
 $(error stop)
-endif
-
-# Check for the current JDK.
-#
-# For Java 1.7/1.8, we require OpenJDK on linux and Oracle JDK on Mac OS.
-requires_openjdk := false
-ifeq ($(BUILD_OS),linux)
-requires_openjdk := true
-endif
-
-
-# Check for the current jdk
-ifeq ($(requires_openjdk), true)
-# The user asked for openjdk, so check that the host
-# java version is really openjdk and not some other JDK.
-ifeq ($(shell echo '$(java_version_str)' | grep -i openjdk),)
-$(info ************************************************************)
-$(info You asked for an OpenJDK based build but your version is)
-$(info $(java_version_str).)
-$(info ************************************************************)
-endif # java version is not OpenJdk
-else # if requires_openjdk
-ifneq ($(shell echo '$(java_version_str)' | grep -i openjdk),)
-$(info ************************************************************)
-$(info You are attempting to build with an unsupported JDK.)
-$(info $(space))
-$(info You use OpenJDK but only Sun/Oracle JDK is supported.)
-$(info Please follow the machine setup instructions at)
-$(info $(space)$(space)$(space)$(space)https://source.android.com/source/download.html)
-$(info ************************************************************)
-endif # java version is not Sun Oracle JDK
-endif # if requires_openjdk
-
-KNOWN_INCOMPATIBLE_JAVAC_VERSIONS := google
-incompat_javac := $(foreach v,$(KNOWN_INCOMPATIBLE_JAVAC_VERSIONS),$(findstring $(v),$(javac_version_str)))
-ifneq ($(incompat_javac),)
-javac_version :=
 endif
 
 # Check for the correct version of javac
