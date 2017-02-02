@@ -1507,4 +1507,9 @@ do
 done
 unset f
 
+# Android specific JACK args
+if [ -n "$JACK_SERVER_VM_ARGUMENTS" ] && [ -z "$ANDROID_JACK_VM_ARGS" ]; then
+    export ANDROID_JACK_VM_ARGS=$JACK_SERVER_VM_ARGUMENTS
+fi
+
 addcompletions
