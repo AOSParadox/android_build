@@ -1400,9 +1400,14 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
   if info_dict is None:
     info_dict = OPTIONS.info_dict
 
-  diff_program = ["imgdiff"]
+  use_bsdiff = info_dict.get("no_gzip_recovery_ramdisk", None) == "true"
+
+  if use_bsdiff:
+    diff_program = ["bsdiff"]
+  else:
+    diff_program = ["imgdiff"]
   path = os.path.join(input_dir, "SYSTEM", "etc", "recovery-resource.dat")
-  if os.path.exists(path):
+  if os.path.exists(path) and not use_bsdiff:
     diff_program.append("-b")
     diff_program.append(path)
     bonus_args = "-b /system/etc/recovery-resource.dat"
