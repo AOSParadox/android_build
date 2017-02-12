@@ -1081,7 +1081,8 @@ $(recovery_ramdisk): $(MINIGZIP) \
 	$(hide) $(RECOVERY_RAMDISK_COMPRESSOR) < $(recovery_uncompressed_ramdisk) > $@
 
 ifndef BOARD_CUSTOM_BOOTIMG_MK
-$(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTIMG) $(recovery_ramdisk) $(recovery_kernel)
+$(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTIMG) $(recovery_ramdisk) $(recovery_kernel) \
+		$(RECOVERYIMAGE_EXTRA_DEPS)
 	@echo -e ${CL_CYN}"----- Making recovery image ------"${CL_RST}
 	$(call build-recoveryimage-target, $@)
 endif # BOARD_CUSTOM_BOOTIMG_MK
@@ -1865,7 +1866,7 @@ ifdef BOARD_RAMDISK_OFFSET
 endif
 
 ifeq ($(strip $(BOARD_KERNEL_SEPARATED_DT)),true)
-	$(hide) echo "$(INSTALLED_DTIMAGE_TARGET)" > $(zip_root)/BOOT/dt_args
+	$(hide) $(ACP) $(INSTALLED_DTIMAGE_TARGET) $(zip_root)/BOOT/dt_args
 endif
 endif # BOARD_USES_RECOVERY_AS_BOOT
 	$(hide) $(foreach t,$(INSTALLED_RADIOIMAGE_TARGET),\
